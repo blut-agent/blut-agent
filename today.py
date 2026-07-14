@@ -25,6 +25,14 @@ BIRTHDAY = os.environ.get("BIRTHDAY", "2026-04-22")
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_API_BASE = "https://api.github.com"
 
+# SVG constants
+FONT_FAMILY = '"Cascadia Code", "Fira Code", "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace'
+FONT_SIZE = 14
+LINE_HEIGHT = 20
+PADDING = 40
+MAX_WIDTH = 800
+MONO_CHAR_WIDTH = 8.4  # Approximate width per character at 14px monospace
+
 
 def fetch_json(url, token=""):
     """Fetch JSON from a URL, using token for rate limiting."""
@@ -33,7 +41,7 @@ def fetch_json(url, token=""):
         req.add_header("Authorization", f"token {token}")
     req.add_header("Accept", "application/vnd.github+json")
     req.add_header("X-GitHub-Api-Version", "2022-11-28")
-    
+
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             return json.loads(resp.read().decode()), None
@@ -55,7 +63,7 @@ def get_user_stats() -> tuple[dict | None, str | None]:
     followers = data.get("followers", 0)
     following = data.get("following", 0)
     created_at = data.get("created_at", "")
-    
+
     # Calculate account age
     if created_at:
         created = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
@@ -63,7 +71,7 @@ def get_user_stats() -> tuple[dict | None, str | None]:
         age_str = format_age(age)
     else:
         age_str = "Unknown"
-    
+
     return {
         "name": data.get("name", USER_NAME),
         "login": data.get("login", USER_NAME),
@@ -76,16 +84,8 @@ def get_user_stats() -> tuple[dict | None, str | None]:
         "created_at": age_str,
         "company": data.get("company", ""),
         "twitter": data.get("twitter_username", ""),
-        "stars": public_repos,  # Approximation
+        "stars": public_repos,
     }, None
-
-
-def get_contributions(token=""):
-    """Get contribution count (approximate from events)."""
-    # We'll use a simple approximation: public_repos * avg_contributions
-    # For accurate data, we'd need to parse events for the last year
-    # This is a simplified version
-    return 0, "N/A"
 
 
 def format_age(age):
@@ -106,159 +106,8 @@ def parse_birthday(birthday_str):
         bd = datetime.strptime(birthday_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)
         age = relativedelta(datetime.now(timezone.utc), bd)
         return format_age(age)
-    except:
+    except Exception:
         return "Unknown"
-
-
-def generate_svg(stats, theme="light"):
-    """Generate the fastfetch-style SVG."""
-    
-    # Color schemes
-    if theme == "dark":
-        bg_color = "#0d1117"
-        text_color = "#c9d1d9"
-        accent_color = "#58a6ff"
-        separator_color = "#30363d"
-        section_color = "#7ee787"
-        value_color = "#a5d6ff"
-        header_color = "#f0f6fc"
-        link_color = "#58a6ff"
-    else:
-        bg_color = "#ffffff"
-        text_color = "#24292f"
-        accent_color = "#0969da"
-        separator_color = "#d0d7de"
-        section_color = "#1a7f37"
-        value_color = "#0550ae"
-        header_color = "#1f2328"
-        link_color = "#0969da"
-    
-    # Build the content lines
-    lines = []
-    separator = "─" * 70
-    
-    # Header
-    lines.append(f" blut-agent@blut-agent {separator}")
-    
-    # Identity section
-    lines.append(f" OS: {'Hermes Agent · Telegram Bot' if theme == 'dark' else 'Hermes Agent · Telegram Bot'}")
-    
-    # Calculate "uptime" from birthday
-    uptime = parse_birthday(BIRTHDAY)
-    lines.append(f" Uptime: {uptime}")
-    lines.append(f" Host: Edgardo Yoliani (Yoliani)")
-    
-    # Kernel/Bio
-    bio = stats.get("bio", "AI Agent · Code Reviewer · OSS Contributor")
-    lines.append(f" Kernel: {bio}")
-    
-    # Editor & Tools
-    lines.append(f" Editor: Neovim, VS Code, Telegram")
-    lines.append(f" Terminal: tmux, fzf, ripgrep")
-    
-    # Empty line
-    lines.append("")
-    
-    # Languages
-    lines.append(f" Languages.Programming: ... Python, TypeScript, YAML")
-    lines.append(f" Languages.Real: ........ Spanish, English")
-    
-    # Empty line
-    lines.append("")
-    
-    # Stack
-    lines.append(f" Stack.AI: .............. LLMs, RAG, Agents, Prompting")
-    lines.append(f" Stack.Tools: ........... Git, gh CLI, MCP, Hermes Agent")
-    lines.append(f" Stack.Domain: .......... Code Review, OSS Contribution, Task Management")
-    
-    # Empty line
-    lines.append("")
-    
-    # Owner section
-    lines.append(f" - Owner {separator}")
-    lines.append(f" Name: ........................ Edgardo Yoliani")
-    lines.append(f" GitHub: ........................ github.com/Yoliani")
-    
-    # Empty line
-    lines.append("")
-    
-    # GitHub Stats
-    lines.append(f" - GitHub Stats {separator}")
-    repos = stats.get("public_repos", 0)
-    followers = stats.get("followers", 0)
-    stars = stats.get("stars", 0)
-    
-    lines.append(f" Repos: .... {repos} | Stars: ............ {stars}")
-    lines.append(f" Followers: .... {followers} | Contributions: .. Live")
-    
-    # Render SVG
-    return render_svg(lines, bg_color, text_color, accent_color, separator_color, 
-                      section_color, value_color, header_color, link_color)
-
-
-def render_svg(lines, bg_color, text_color, accent_color, separator_color,
-               section_color, value_color, header_color, link_color):
-    """Render lines to SVG with monospace font styling."""
-    
-    font_family = '"Cascadia Code", "Fira Code", "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace'
-    font_size = 14
-    line_height = 20
-    padding = 40
-    width = 800
-    height = padding * 2 + len(lines) * line_height
-    
-    svg_elements = []
-    svg_elements.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" font-family="{font_family}">')
-    
-    # Background
-    svg_elements.append(f'  <rect width="100%" height="100%" fill="{bg_color}"/>')
-    
-    # Lines
-    for i, line in enumerate(lines):
-        y = padding + i * line_height
-        x = padding
-        
-        # Detect sections (lines starting with "-")
-        if line.strip().startswith("-"):
-            # Section header
-            svg_elements.append(f'  <text x="{x}" y="{y}" fill="{section_color}" font-size="{font_size}" font-weight="bold">{escape_xml(line)}</text>')
-        elif ":" in line and not line.strip().startswith("-"):
-            # Key: Value lines
-            parts = line.split(":", 1)
-            key = parts[0]
-            value = parts[1] if len(parts) > 1 else ""
-            
-            # Find the dots separator position
-            dot_match = None
-            for idx, char in enumerate(key):
-                if char == ".":
-                    dot_match = idx
-                    break
-            
-            if dot_match:
-                # Split at dots
-                key_part = key[:dot_match]
-                dots_and_value = key[dot_match:]
-                
-                # Key text
-                svg_elements.append(f'  <text x="{x}" y="{y}" fill="{text_color}" font-size="{font_size}">{escape_xml(key_part)}</text>')
-                
-                # Dots (repeated character)
-                dots_start = x + len(key_part) * font_size * 0.6  # Approximate monospace width
-                dots_end = min(dots_start + len(dots_and_value) * font_size * 0.6, width - padding - 200)
-                dots_count = max(1, int((dots_end - dots_start) / (font_size * 0.6)))
-                dots_text = "." * dots_count
-                svg_elements.append(f'  <text x="{dots_start}" y="{y}" fill="{separator_color}" font-size="{font_size}">{escape_xml(dots_text)}</text>')
-                
-                # Value
-                svg_elements.append(f'  <text x="{dots_end + 10}" y="{y}" fill="{value_color}" font-size="{font_size}">{escape_xml(value.strip())}</text>')
-            else:
-                svg_elements.append(f'  <text x="{x}" y="{y}" fill="{text_color}" font-size="{font_size}">{escape_xml(line)}</text>')
-        else:
-            svg_elements.append(f'  <text x="{x}" y="{y}" fill="{text_color}" font-size="{font_size}">{escape_xml(line)}</text>')
-    
-    svg_elements.append(f'</svg>')
-    return "\n".join(svg_elements)
 
 
 def escape_xml(text):
@@ -271,16 +120,136 @@ def escape_xml(text):
             .replace("'", "&apos;"))
 
 
+def text_width(text):
+    """Approximate pixel width of text in monospace font."""
+    return len(text) * MONO_CHAR_WIDTH
+
+
+def generate_svg(stats, theme="light"):
+    """Generate the fastfetch-style SVG."""
+
+    # Color schemes
+    if theme == "dark":
+        bg_color = "#0d1117"
+        text_color = "#c9d1d9"
+        separator_color = "#30363d"
+        section_color = "#7ee787"
+        value_color = "#a5d6ff"
+    else:
+        bg_color = "#ffffff"
+        text_color = "#24292f"
+        separator_color = "#d0d7de"
+        section_color = "#1a7f37"
+        value_color = "#0550ae"
+
+    # Build structured rows: each row is one of:
+    #   ("header", text)
+    #   ("section", text)
+    #   ("kv", key, value)
+    #   ("blank",)
+    rows = []
+    separator = "─" * 70
+
+    # Header
+    rows.append(("header", f" blut-agent@blut-agent {separator}"))
+
+    # Identity
+    rows.append(("kv", " OS: ", "Hermes Agent · Telegram Bot"))
+    uptime = parse_birthday(BIRTHDAY)
+    rows.append(("kv", " Uptime: ", uptime))
+    rows.append(("kv", " Host: ", "Edgardo Yoliani (Yoliani)"))
+
+    bio = stats.get("bio", "AI Agent · Code Reviewer · OSS Contributor")
+    rows.append(("kv", " Kernel: ", bio))
+    rows.append(("kv", " Editor: ", "Neovim, VS Code, Telegram"))
+    rows.append(("kv", " Terminal: ", "tmux, fzf, ripgrep"))
+
+    rows.append(("blank",))
+
+    # Languages
+    rows.append(("kv", " Languages.Programming: ", "Python, TypeScript, YAML"))
+    rows.append(("kv", " Languages.Real: ", "Spanish, English"))
+
+    rows.append(("blank",))
+
+    # Stack
+    rows.append(("kv", " Stack.AI: ", "LLMs, RAG, Agents, Prompting"))
+    rows.append(("kv", " Stack.Tools: ", "Git, gh CLI, MCP, Hermes Agent"))
+    rows.append(("kv", " Stack.Domain: ", "Code Review, OSS Contribution, Task Management"))
+
+    rows.append(("blank",))
+
+    # Owner section
+    rows.append(("section", f" - Owner {separator}"))
+    rows.append(("kv", " Name: ", "Edgardo Yoliani"))
+    rows.append(("kv", " GitHub: ", "github.com/Yoliani"))
+
+    rows.append(("blank",))
+
+    # GitHub Stats
+    repos = stats.get("public_repos", 0)
+    followers = stats.get("followers", 0)
+    stars = stats.get("stars", 0)
+
+    rows.append(("section", f" - GitHub Stats {separator}"))
+    rows.append(("kv", " Repos: ", f"{repos} | Stars: {stars}"))
+    rows.append(("kv", " Followers: ", f"{followers} | Contributions: Live"))
+
+    # Calculate height
+    height = PADDING * 2 + len(rows) * LINE_HEIGHT
+
+    svg = []
+    # Escape quotes in font-family for valid XML
+    ff_escaped = FONT_FAMILY.replace('"', "'")
+    svg.append(f'<svg xmlns="http://www.w3.org/2000/svg" width="{MAX_WIDTH}" height="{height}" font-family="{ff_escaped}">')
+    svg.append(f'  <rect width="100%" height="100%" fill="{bg_color}"/>')
+
+    for i, row in enumerate(rows):
+        y = PADDING + i * LINE_HEIGHT
+        x = PADDING
+
+        if row[0] == "header":
+            svg.append(f'  <text x="{x}" y="{y}" fill="{text_color}" font-size="{FONT_SIZE}" font-weight="bold">{escape_xml(row[1])}</text>')
+
+        elif row[0] == "section":
+            svg.append(f'  <text x="{x}" y="{y}" fill="{section_color}" font-size="{FONT_SIZE}" font-weight="bold">{escape_xml(row[1])}</text>')
+
+        elif row[0] == "kv":
+            _, key, value = row
+            key_width = text_width(key)
+            value_width = text_width(value)
+
+            # Calculate dots length to fill space between key and value
+            dots_max_width = MAX_WIDTH - PADDING - key_width - value_width - 20
+            dots_max_width = max(4, dots_max_width)
+            dots_count = max(1, int(dots_max_width / MONO_CHAR_WIDTH))
+            dots = "." * dots_count
+
+            dots_x = x + key_width
+            dots_text_x = dots_x
+            value_x = dots_x + text_width(dots) + 10
+
+            svg.append(f'  <text x="{x}" y="{y}" fill="{text_color}" font-size="{FONT_SIZE}">{escape_xml(key)}</text>')
+            svg.append(f'  <text x="{dots_text_x}" y="{y}" fill="{separator_color}" font-size="{FONT_SIZE}">{escape_xml(dots)}</text>')
+            svg.append(f'  <text x="{value_x}" y="{y}" fill="{value_color}" font-size="{FONT_SIZE}">{escape_xml(value)}</text>')
+
+        elif row[0] == "blank":
+            pass  # No output, just spacing
+
+    svg.append("</svg>")
+    return "\n".join(svg)
+
+
 def main():
     """Main entry point."""
     print(f"Generating profile SVGs for @{USER_NAME}...")
-    
+
     # Fetch stats
     stats, err = get_user_stats()
     if err:
         print(f"Error fetching stats: {err}")
-        print("Using cached/placeholder stats.")
-    
+        print("Using fallback stats.")
+
     if not stats:
         stats = {
             "public_repos": 6,
@@ -288,15 +257,15 @@ def main():
             "stars": 0,
             "bio": "AI Agent · Code Reviewer · OSS Contributor"
         }
-    
+
     # Generate both themes
     for theme in ["light", "dark"]:
         svg_content = generate_svg(stats, theme)
         filename = f"{theme}_mode.svg"
-        
+
         with open(filename, "w", encoding="utf-8") as f:
             f.write(svg_content)
-        
+
         print(f"✓ Generated {filename}")
 
 
