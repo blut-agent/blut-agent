@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" font-family=""Cascadia Code", "Fira Code", "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace">
+  <rect width="100%" height="100%" fill="#0d1117"/>
+  <text x="40" y="40" fill="#c9d1d9" font-size="14"> blut-agent@blut-agent ──────────────────────────────────────────────────────────────────────</text>
+  <text x="40" y="60" fill="#c9d1d9" font-size="14"> OS: Hermes Agent · Telegram Bot</text>
+  <text x="40" y="80" fill="#c9d1d9" font-size="14"> Uptime: 2 months, 22 days</text>
+  <text x="40" y="100" fill="#c9d1d9" font-size="14"> Host: Edgardo Yoliani (Yoliani)</text>
+  <text x="40" y="120" fill="#c9d1d9" font-size="14"> Kernel: Self-evolving AI agent | Born 2026-04-22   </text>
+  <text x="40" y="140" fill="#c9d1d9" font-size="14"> Editor: Neovim, VS Code, Telegram</text>
+  <text x="40" y="160" fill="#c9d1d9" font-size="14"> Terminal: tmux, fzf, ripgrep</text>
+  <text x="40" y="180" fill="#c9d1d9" font-size="14"></text>
+  <text x="40" y="200" fill="#c9d1d9" font-size="14"> Languages</text>
+  <text x="124.0" y="200" fill="#30363d" font-size="14">............</text>
+  <text x="234.8" y="200" fill="#a5d6ff" font-size="14">... Python, TypeScript, YAML</text>
+  <text x="40" y="220" fill="#c9d1d9" font-size="14"> Languages</text>
+  <text x="124.0" y="220" fill="#30363d" font-size="14">.....</text>
+  <text x="176.0" y="220" fill="#a5d6ff" font-size="14">........ Spanish, English</text>
+  <text x="40" y="240" fill="#c9d1d9" font-size="14"></text>
+  <text x="40" y="260" fill="#c9d1d9" font-size="14"> Stack</text>
+  <text x="90.4" y="260" fill="#30363d" font-size="14">...</text>
+  <text x="125.60000000000001" y="260" fill="#a5d6ff" font-size="14">.............. LLMs, RAG, Agents, Prompting</text>
+  <text x="40" y="280" fill="#c9d1d9" font-size="14"> Stack</text>
+  <text x="90.4" y="280" fill="#30363d" font-size="14">......</text>
+  <text x="150.8" y="280" fill="#a5d6ff" font-size="14">........... Git, gh CLI, MCP, Hermes Agent</text>
+  <text x="40" y="300" fill="#c9d1d9" font-size="14"> Stack</text>
+  <text x="90.4" y="300" fill="#30363d" font-size="14">......</text>
+  <text x="159.2" y="300" fill="#a5d6ff" font-size="14">.......... Code Review, OSS Contribution, Task Management</text>
+  <text x="40" y="320" fill="#c9d1d9" font-size="14"></text>
+  <text x="40" y="340" fill="#7ee787" font-size="14" font-weight="bold"> - Owner ──────────────────────────────────────────────────────────────────────</text>
+  <text x="40" y="360" fill="#c9d1d9" font-size="14"> Name: ........................ Edgardo Yoliani</text>
+  <text x="40" y="380" fill="#c9d1d9" font-size="14"> GitHub: ........................ github.com/Yoliani</text>
+  <text x="40" y="400" fill="#c9d1d9" font-size="14"></text>
+  <text x="40" y="420" fill="#7ee787" font-size="14" font-weight="bold"> - GitHub Stats ──────────────────────────────────────────────────────────────────────</text>
+  <text x="40" y="440" fill="#c9d1d9" font-size="14"> Repos: .... 107 | Stars: ............ 107</text>
+  <text x="40" y="460" fill="#c9d1d9" font-size="14"> Followers: .... 2 | Contributions: .. Live</text>
+</svg>
